@@ -1,0 +1,24 @@
+
+# add #
+org 0000h
+mov a, #56h 
+mov b, #67h
+add a,b mov r0, a
+mov a, #34h
+mov b, #45h
+addc a,b
+mov rl, a
+end
+
+
+# subb #
+org 0000h
+mov a, #65h
+mov b, #12h
+subb a,b
+mov r6, a 
+mov a, #87h
+mov b, #23h
+subb a,b
+mov r3, a
+end

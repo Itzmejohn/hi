@@ -1,0 +1,67 @@
+ORG 0000h
+LJMP START ;Skip Interrupt vector address area
+START:
+;********** send command to lcd ******************************
+MOV A,#38H ; lcd with 2 lines,5x7 matrix
+ACALL COMMAND ; call command subroutine
+MOV A,#0EH ; display on, cursor on
+ACALL COMMAND ; call command subroutine
+MOV A,#80H ; cursor at line1,pos 0
+ACALL COMMAND ;call command subroutine
+MOV A,#01H ; clear lcd
+ACALL COMMAND ; call aommand subroutine
+;************ send data to lcd ******************************
+MOV A,#'W' ;DISPLY CHAR
+ACALL DISPLAY ;call display subroutine
+MOV A,#'E' ;DISPLY CHAR
+ACALL DISPLAY ;call display subroutine
+MOV A,#'L' ;DISPLY CHAR
+ACALL DISPLAY ;call display subroutine
+mov a,#'C' ;DISPLY CHAR
+ACALL DISPLAY ;call display subroutine
+MOV a,#'O' ;DISPLY CHAR
+ACALL DISPLAY ;call display subroutine
+MOV a,#'M' ;DISPLY CHAR
+ACALL DISPLAY ;call display subroutine
+MOV A,#'E' ;DISPLY CHAR
+ACALL DISPLAY ;call display subroutine
+ACALL DELAY
+ACALL DELAY ;call delay
+ACALL DELAY
+sjmp START
+;***********command subroutine****************************
+command:
+ACALL READY ;subroutine for command write
+MOV R7,A ;
+MOV P1,A ;move command byte to port
+CLR P3.0 ;rs=command
+CLR P3.1 ;rw=write
+SETB P3.2 ;start enable pulse
+CLR P3.2
+RET
+;************* display subroutine*************************
+display:
+ACALL READY
+MOV P1,A
+SETB P3.0
+CLR P3.1
+SETB P3.2
+CLR P3.2
+RET
+READY: ; ready routine to check
+SETB P1.7 ; lcd is ready to display the
+CLR P3.0 ; next char ; for this using the busy flag of lcd,
+SETB P3.1 ; i.e. D7 of lcd which is on Po.7 for microcontroller.
+WAIT:
+CLR P3.2
+SETB P3.2
+JB P1.7,WAIT
+RET
+;************* delay subroutine**************************
+DELAY:
+MOV R1,#255
+HERR:MOV R2,#100
+HERE: DJNZ R2,HERE
+DJNZ R1,HERR
+RET
+END

@@ -1,0 +1,224 @@
+ORG 0000h
+LJMP START ;Skip Interrupt vector address area
+START:
+;*********** lcd commands **************************
+MOV A,#38H ; lcd with 2 lines,5x7 matrix
+ACALL COMMAND ; call command subroutine
+MOV A,#0EH ; display on,cursor on
+ACALL COMMAND ; call command subroutine
+MOV A,#01H ; clear lcd
+ACALL COMMAND ; call command subroutine
+MOV A,#80H ; cursor at line1,pos 0
+ACALL COMMAND
+MOV A,#0CH
+ACALL COMMAND
+ ;************* lcd data ************************
+MOV A,#'P' ;DISPLY CHAR
+ACALL DISPLAY
+MOV A,#'R' ;DISPLY CHAR
+ACALL DISPLAY
+MOV A,#'E' ;DISPLY CHAR
+ACALL DISPLAY
+mov a,#'S' ;DISPLY CHAR
+ACALL DISPLAY
+MOV a,#'S' ;DISPLY CHAR
+ACALL DISPLAY
+MOV a,#'K' ;DISPLY CHAR
+ACALL DISPLAY
+MOV A,#'E' ;DISPLY CHAR
+ACALL DISPLAY
+MOV A,#'Y' ;DISPLY CHAR
+ACALL DISPLAY
+MOV A,#':' ;DISPLY CHAR
+ACALL DISPLAY
+;******************************************************************
+;*************check for coloum 1 *********************************
+
+CHKCOL1:
+ MOV P2,#0FFH
+ CLR P2.4 ;set condition for clm1
+ SETB P2.0
+ JB P2.0,CHKCOL1R2 ; chk bit clm 1 row 1
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'0' ; 7 segment code for '0'
+ ACALL DISPLAY
+JNB P2.0,$
+AJMP CHKCOL1
+
+CHKCOL1R2:
+ SETB P2.1
+ JB P2.1,CHKCOL1R3 ; chk bit clm 1 row 2
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'4' ; 7 segment code for '4'
+ ACALL DISPLAY
+JNB P2.1,$
+AJMP CHKCOL1
+CHKCOL1R3:
+ SETB P2.2
+ JB P2.2,CHKCOL1R4 ; chk bit clm 1 row 3
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'8' ; 7 segment code for '8'
+ ACALL DISPLAY
+JNB P2.2,$
+AJMP CHKCOL1
+CHKCOL1R4:
+ SETB P2.3
+ JB P2.3,CHKCOL2 ;chk bit clm 1 row 4
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'C' ; 7 segment code for 'c'
+ ACALL DISPLAY
+ JNB P2.3,$
+AJMP CHKCOL1
+;********** check for coloum 2 ******************************
+CHKCOL2:
+ SETB P2.4 ;clm1 not in use
+ CLR P2.5 ;set condition for clmn2
+ SETB P2.0
+ JB P2.0,CHKCOL2R2 ;chk bit clm 2 row 1
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'1' ; 7 segment code for '1'
+ ACALL DISPLAY
+JNB P2.0,$
+ AJMP CHKCOL1
+CHKCOL2R2:
+ SETB P2.1
+ JB P2.1,CHKCOL2R3 ;chk bit clm 2 row 2
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'5' ; 7 segment code for '5'
+ ACALL DISPLAY
+JNB P2.1,$
+ AJMP CHKCOL1
+CHKCOL2R3:
+ SETB P2.2
+ JB P2.2,CHKCOL2R4 ;chk bit clm 2 row 3
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'9' ; 7 segment code for '9'
+ ACALL DISPLAY
+JNB P2.2,$
+ AJMP CHKCOL1
+CHKCOL2R4:
+ SETB P2.3
+ JB P2.3,CHKCOL3 ;chk bit clm 2 row 4
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'D' ; 7 segment code for 'D'
+ ACALL DISPLAY
+JNB P2.3,$
+ AJMP CHKCOL1
+;*********** check for coloum 3 *******************************
+CHKCOL3:
+ SETB P2.5
+ CLR P2.6 ;set condition for clm 3
+ SETB P2.0
+ JB P2.0,CHKCOL3R2 ;chk bit clm 3 row 1
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'2' ; 7 segment code for '0'
+ ACALL DISPLAY
+ JNB P2.0,$ ; 7 segment code for '0'
+ AJMP CHKCOL1
+CHKCOL3R2:
+ SETB P2.1
+ JB P2.1,CHKCOL3R3 ;chk bit clm 3 row 2
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'6' ; 7 segment code for '0'
+ ACALL DISPLAY
+JNB P2.1,$ ; 7 segment code for '0'
+ AJMP CHKCOL1
+CHKCOL3R3:
+ SETB P2.2
+ JB P2.2,CHKCOL3R4 ;chk bit clm 3 row 3
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'A' ; 7 segment code for 'A'
+ ACALL DISPLAY
+ JNB P2.2,$
+ AJMP CHKCOL1
+CHKCOL3R4:
+ SETB P2.3
+ JB P2.3,CHKCOL4 ;chk bit clm 3 row 4
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'E' ; 7 segment code for 'E'
+ ACALL DISPLAY
+JNB P2.3,$
+ AJMP CHKCOL1
+;************* check for coloum 4 ******************************
+CHKCOL4: ;chk for clm 4
+ SETB P2.6 ;clm 3 not in use
+ CLR P2.7 ;set condition for clm 4
+ SETB P2.0
+ JB P2.0,CHKCOL4R2 ;chk bit clm 4 row 1
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'3' ; 7 segment code for '3'
+ ACALL DISPLAY
+ JNB P2.0,$
+ AJMP CHKCOL1
+CHKCOL4R2: ;chk bit clm 4 row 2
+ SETB P2.1
+ JB P2.1,CHKCOL4R3
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'7' ; 7 segment code for '7'
+ ACALL DISPLAY
+ JNB P2.1,$
+ AJMP CHKCOL1
+CHKCOL4R3:
+ SETB P2.2
+ JB P2.2,CHKCOL4R4 ;chk bit clm 4 row 3
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'B' ; 7 segment code for 'B'
+ ACALL DISPLAY
+JNB P2.2,$
+ AJMP CHKCOL1
+CHKCOL4R4:
+ SETB P2.3
+ JB P2.3,ESC ;chk bit clm 4 row 4
+ MOV A,#89H
+ACALL COMMAND
+MOV A,#'F' ; 7 segment code for 'F'
+ ACALL DISPLAY
+JNB P2.3,$
+ESC: LJMP CHKCOL1
+;**************************************************************
+sjmp $
+;************************* command subroutine ********************
+command:
+ACALL READY ;subroutine for command write
+MOV R7,A ;
+MOV P1,A ;move command byte to port
+CLR P3.0 ;rs=command
+CLR P3.1 ;rw=write
+SETB P3.2 ;start enable pulse
+CLR P3.2
+RET
+;*************** display subroutine ******************************
+
+display:
+ACALL READY
+MOV P1,A
+SETB P3.0
+CLR P3.1
+SETB P3.2
+CLR P3.2
+RET
+READY: ; ready routine to check
+SETB P1.7 ; lcd is ready to display the
+CLR P3.0 ; next char ; for this using the busy flag of lcd,
+SETB P3.1 ; i.e. D7 of lcd which is on Po.7 for microcontroller.
+WAIT:
+CLR P3.2
+SETB P3.2
+JB P1.7,WAIT
+RET
+END

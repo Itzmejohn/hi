@@ -1,0 +1,5 @@
+mov a, # 20h
+mov b, #10h
+mov rl, a
+mov r2, a
+end

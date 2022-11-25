@@ -1,0 +1,32 @@
+# ADD # 
+org 0000h
+mov a, #05h 
+mov b, #04h
+add a,b
+end
+
+# SUBTRACTION #
+ORG 0000H
+MOV A, #49H
+MOV B, #17H 
+SUBB A, B
+MOV RO, A
+END
+
+# MULTIPLICATION #
+org 0000h
+mov a, #25h
+mov b, #16h
+mul ab
+mov rl, a
+mov r2, b
+end
+
+# DIVISION #
+org 0000h
+mov a, #65h
+mov b, #4
+div ab
+mov ri, a 
+mov 12,b
+end
